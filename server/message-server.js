@@ -1,9 +1,8 @@
 // Load the TCP Library
 const net = require('net');
-const {processFizzBuzz} = require('./message-processors/fizz-buzz-processor');
 const {info, status, error} = require('../common/infrastructure/logger');
 const {FizzBuzzMessage} = require('./../common/messages/fizz-buzz-message');
-const {MessageTypes} = require('./../common/messages/message-types');
+const {processMessage} = require('./message-processors/message-processor');
 
 // Keep track of the chat clients
 var clients = [];
@@ -28,18 +27,18 @@ net.createServer(function (socket) {
     try {
       message = new FizzBuzzMessage(JSON.parse(dataAsString));
     } catch (err) {
-      error("Invalid message format:" + err + '. Data >' + data);
+      error('Invalid message format:' + err + '. Data >' + data);
       return;
     }
 
-    if (message && message.type === MessageTypes.FIZZ_BUZZ) {
+    try {
       info('Processing ' + message.type);
-      broadcast(message.type + ' latest result: ' + processFizzBuzz(message.value));
-      return;
+      const result = processMessage(message);
+      broadcast(message.type + ' latest result: ' + result);
+    } catch (error) {
+      error('Invalid type received. Error > ' + error);
+      socket.write('Invalid type received' + data);
     }
-
-    error('Invalid type received');
-    socket.write('Invalid type received' + data);
   });
 
   // Remove the client from the list when it leaves
