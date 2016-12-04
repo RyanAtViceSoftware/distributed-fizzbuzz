@@ -1,7 +1,6 @@
 // Load the TCP Library
 const net = require('net');
 const {info, status, error} = require('../common/infrastructure/logger');
-const {FizzBuzzMessage} = require('./../common/messages/fizz-buzz-message');
 const {processMessage} = require('./message-processors/message-processor');
 
 // Keep track of the chat clients
@@ -22,21 +21,12 @@ net.createServer(function (socket) {
 
   // Handle incoming messages from clients.
   socket.on('data', function (data) {
-    const dataAsString = data.toString();
-    let message;
     try {
-      message = new FizzBuzzMessage(JSON.parse(dataAsString));
+      info('Processing ' + data);
+      const messageResult = processMessage(data);
+      broadcast(messageResult.type + ' latest result: ' + messageResult.value);
     } catch (err) {
-      error('Invalid message format:' + err + '. Data >' + data);
-      return;
-    }
-
-    try {
-      info('Processing ' + message.type);
-      const result = processMessage(message);
-      broadcast(message.type + ' latest result: ' + result);
-    } catch (error) {
-      error('Invalid type received. Error > ' + error);
+      error('Invalid type received. Error > ' + err);
       socket.write('Invalid type received' + data);
     }
   });

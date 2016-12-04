@@ -1,5 +1,5 @@
 const {Message} = require('./message');
-const {MessageTypes} = require('./message-types');
+const {MessageTypes} = require('./index');
 
 class FizzBuzzMessage extends Message {
   constructor(data) {
