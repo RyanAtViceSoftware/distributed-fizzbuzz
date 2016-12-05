@@ -1,5 +1,9 @@
-const {processFizzBuzz} = require('./fizz-buzz-processor');
-const {MessageTypes, Message} = require('../../common/messages');
+const {Message} = require('../../common/messages');
+
+// TODO: Refactor so that you are using required to bring in all MessageProcessors
+// ex: import * as MessageProcessors from './processors'
+const {FizzBuzzProcessor} = require('./fizz-buzz-processor');
+const processors = [FizzBuzzProcessor];
 
 function processMessage(data) {
   const message = getMessage(data);
@@ -11,13 +15,16 @@ function processMessage(data) {
     throw new Error('Invalid message type. message > ' + message);
   }
 
-  if(message.type === MessageTypes.FIZZ_BUZZ) {
-    // TODO: a new type would make sense here but reusing
-    // what I have to save time.
-    return new Message({
-      type: message.type,
-      value: processFizzBuzz(message.value)
-    });
+  for(let i=0;i<processors.length;i++) {
+    let processor = processors[i];
+    if(processor.canProcess(message)) {
+      // TODO: a new type would make sense here but reusing
+      // what I have to save time.
+      return new Message({
+        type: message.type,
+        value: processor.process(message)
+      });
+    }
   }
 
   throw new Error('Invalid message type. message > ' + message);
