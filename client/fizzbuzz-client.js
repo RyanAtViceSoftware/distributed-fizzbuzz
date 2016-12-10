@@ -1,15 +1,17 @@
+'use strict'
+
 const net = require('net');
 const readline = require('readline');
 const {status, info} = require('../common/infrastructure/logger');
 const {FizzBuzzMessage} = require('../common/messages/fizz-buzz-message');
 
-var readlineInterface = readline.createInterface({
+const readlineInterface = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
   terminal: false
 });
 
-var client = new net.Socket();
+const client = new net.Socket();
 
 readlineInterface.on('line', function (line) {
   if (line === 'q') {
@@ -18,11 +20,11 @@ readlineInterface.on('line', function (line) {
     return;
   }
 
-  var message = new FizzBuzzMessage({
+  const message = new FizzBuzzMessage({
     value: line
   });
 
-  var string = JSON.stringify(message);
+  const string = JSON.stringify(message);
   info('Sending: ' + line);
   client.write(string);
 })

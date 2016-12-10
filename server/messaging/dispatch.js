@@ -1,11 +1,14 @@
+'use strict'
+
 const {Message} = require('../../common/messages');
+const {handlers} = require('./message-handlers');
 
 // TODO: Refactor so that you are using required to bring in all MessageProcessors
 // ex: import * as MessageProcessors from './processors'
-const {FizzBuzzProcessor} = require('./fizz-buzz-processor');
-const processors = [FizzBuzzProcessor];
+const {FizzBuzzHandler} = require('./message-handlers/fizz-buzz-handler');
+const processors = [FizzBuzzHandler];
 
-function processMessage(data) {
+function dispatch(data) {
   const message = getMessage(data);
 
   if (!message) {
@@ -15,14 +18,14 @@ function processMessage(data) {
     throw new Error('Invalid message type. message > ' + message);
   }
 
-  for(let i=0;i<processors.length;i++) {
-    let processor = processors[i];
-    if(processor.canProcess(message)) {
+  for(let i=0;i<handlers.length;i++) {
+    let handler = handlers[i];
+    if(handler.canProcess(message)) {
       // TODO: a new type would make sense here but reusing
       // what I have to save time.
       return new Message({
         type: message.type,
-        value: processor.process(message)
+        value: handler.process(message)
       });
     }
   }
@@ -41,5 +44,5 @@ function getMessage(data) {
 }
 
 module.exports = {
-  processMessage
+  dispatch
 }

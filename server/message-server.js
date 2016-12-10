@@ -1,10 +1,11 @@
-// Load the TCP Library
+'use strict'
+
 const net = require('net');
 const {info, status, error} = require('../common/infrastructure/logger');
-const {processMessage} = require('./message-processors/message-processor');
+const {dispatch} = require('./messaging/dispatch');
 
 // Keep track of the chat clients
-var clients = [];
+const clients = [];
 
 // Start a TCP Server
 net.createServer(function (socket) {
@@ -19,11 +20,11 @@ net.createServer(function (socket) {
   socket.write("Welcome " + socket.name + "\n");
   broadcast(socket.name + " joined the chat\n", socket);
 
-  // Handle incoming messages from clients.
+  // Handle incoming message-handlers from clients.
   socket.on('data', function (data) {
     try {
       info('Processing ' + data);
-      const messageResult = processMessage(data);
+      const messageResult = dispatch(data);
       broadcast(messageResult.type + ' latest result: ' + messageResult.value);
     } catch (err) {
       error('Invalid type received. Error > ' + err);

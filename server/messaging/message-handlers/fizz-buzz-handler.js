@@ -1,9 +1,11 @@
-const {info} = require('../../common/infrastructure/logger');
-const {MessageTypes, Message} = require('../../common/messages');
+'use strict'
+
+const {info} = require('../../../common/infrastructure/logger');
+const {MessageTypes, Message} = require('../../../common/messages/index');
 
 // Todo: find a better Template Method pattern for ES6 classes
 // and then reorganize this code into separate files.
-class MessageProcessor {
+class MessageHandler {
   constructor(processLogic, canProcessLogic) {
     // Todo: add type checks and empty checks
     if(!processLogic) {
@@ -64,10 +66,8 @@ const processFizzBuzz = ({value}) => {
   }
 };
 
-const canProcess = message => message.type === MessageTypes.FIZZ_BUZZ
+const canProcess = message => message.type === MessageTypes.FIZZ_BUZZ;
 
-const FizzBuzzProcessor = new MessageProcessor(processFizzBuzz, canProcess);
+const FizzBuzzHandler = new MessageHandler(processFizzBuzz, canProcess);
 
-module.exports = {
-  FizzBuzzProcessor
-}
+module.exports = FizzBuzzHandler;

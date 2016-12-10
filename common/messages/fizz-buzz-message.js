@@ -1,3 +1,5 @@
+'use strict'
+
 const {Message} = require('./message');
 const {MessageTypes} = require('./index');
 

@@ -1,3 +1,5 @@
+'use strict'
+
 require('colors');
 
 function log(value) {
