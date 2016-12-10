@@ -3,36 +3,43 @@
 const {Message} = require('../../common/messages');
 const {handlers} = require('./message-handlers');
 
-// TODO: Refactor so that you are using required to bring in all MessageProcessors
-// ex: import * as MessageProcessors from './processors'
-const {FizzBuzzHandler} = require('./message-handlers/fizz-buzz-handler');
-const processors = [FizzBuzzHandler];
+function dispatch(data, next) {
+  let message = null;
 
-function dispatch(data) {
-  const message = getMessage(data);
+  getMessage(data, (err, result) => {
+    if (err) {
+      next(new Error('Unable to get message from data. Error >' + err));
+    }
+
+    message = result;
+  });
 
   if (!message) {
-    throw new Error('You must specify a message.');
+    next(new Error('You must specify a message.'));
   }
+
   if (!(message instanceof Message)) {
-    throw new Error('Invalid message type. message > ' + message);
+    next(new Error('Invalid message type. message > ' + message));
   }
 
   for(let i=0;i<handlers.length;i++) {
     let handler = handlers[i];
-    if(handler.canProcess(message)) {
-      handler.process(message);
-    }
+
+    handler.process(message, err => {
+      if(err) {
+        next('Error processing message. (message, err) > ', message, err);
+      }
+    });
   }
 }
 
 // TODO: There is a better place for this...
-function getMessage(data) {
+function getMessage(data, next) {
   const dataAsString = data.toString();
   try {
-    return new Message(JSON.parse(dataAsString));
+    next(null, new Message(JSON.parse(dataAsString)));
   } catch (err) {
-    throw new Error('Invalid message format:' + err + '. Data >' + data);
+    next(new Error('Invalid message format:' + err + '. Data >' + data));
   }
 }
 
