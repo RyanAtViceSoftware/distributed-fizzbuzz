@@ -6,19 +6,19 @@ const {MessageTypes, Message} = require('../../../common/messages/index');
 // Todo: find a better Template Method pattern for ES6 classes
 // and then reorganize this code into separate files.
 class MessageHandler {
-  constructor(processLogic, canProcessLogic) {
+  constructor(processingLogic, handles) {
     // Todo: add type checks and empty checks
-    if(!processLogic) {
+    if(!processingLogic) {
       throw new Error('processLogic is required.');
     }
 
     // Todo: add type checks
-    if(!canProcessLogic) {
-      throw new Error('canProcessLogic is required');
+    if(!handles) {
+      throw new Error('handles is required');
     }
 
-    this._processLogic = processLogic;
-    this._canProcessLogic = canProcessLogic;
+    this._processLogic = processingLogic;
+    this._handles = handles;
   }
 
   process(message) {
@@ -39,7 +39,9 @@ class MessageHandler {
       throw new Error("message must be an instance of a Message class");
     }
 
-    return this._canProcessLogic(message);
+    return this._handles.find(
+      messageType => messageType === message.type
+    );
   }
 }
 
@@ -66,8 +68,8 @@ const processFizzBuzz = ({value}) => {
   }
 };
 
-const canProcess = message => message.type === MessageTypes.FIZZ_BUZZ;
+const handles = [MessageTypes.FIZZ_BUZZ];
 
-const FizzBuzzHandler = new MessageHandler(processFizzBuzz, canProcess);
+const FizzBuzzHandler = new MessageHandler(processFizzBuzz, handles);
 
 module.exports = FizzBuzzHandler;
