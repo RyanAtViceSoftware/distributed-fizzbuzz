@@ -2,6 +2,7 @@
 
 const {info} = require('../../../common/infrastructure/logger');
 const {MessageTypes, Message} = require('../../../common/messages/index');
+const clients = require('../../infrastructure/clients');
 
 // Todo: find a better Template Method pattern for ES6 classes
 // and then reorganize this code into separate files.
@@ -53,6 +54,7 @@ const fizzBuzzRules = [
 const processFizzBuzz = ({value}) => {
   info('processFizzBuzz - processing value: ' + value);
   let matches = [];
+  let result;
 
   fizzBuzzRules.forEach(rule => {
     const result = rule(value)
@@ -62,10 +64,14 @@ const processFizzBuzz = ({value}) => {
   });
 
   if (matches.length === 0) {
-    return value;
+    result = value;
   } else {
-    return matches.join();
+
+    result = matches.join();
   }
+
+  clients.broadcast(MessageTypes.FIZZ_BUZZ + ' latest result: '
+    + result);
 };
 
 const handles = [MessageTypes.FIZZ_BUZZ];

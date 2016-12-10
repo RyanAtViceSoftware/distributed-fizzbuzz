@@ -24,9 +24,7 @@ net.createServer(function (socket) {
   socket.on('data', function (data) {
     try {
       info('Processing ' + data);
-      const messageResult = dispatch(data);
-      clients.broadcast(messageResult.type + ' latest result: '
-        + messageResult.value);
+      dispatch(data);
     } catch (err) {
       error('Invalid type received. Error > ' + err
         + ' stack > ' + err.stack);

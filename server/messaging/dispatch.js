@@ -21,16 +21,9 @@ function dispatch(data) {
   for(let i=0;i<handlers.length;i++) {
     let handler = handlers[i];
     if(handler.canProcess(message)) {
-      // TODO: a new type would make sense here but reusing
-      // what I have to save time.
-      return new Message({
-        type: message.type,
-        value: handler.process(message)
-      });
+      handler.process(message);
     }
   }
-
-  throw new Error('Invalid message type. message > ' + message);
 }
 
 // TODO: There is a better place for this...
