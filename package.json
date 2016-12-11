@@ -13,7 +13,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-server": "node ./server/message-server.js",
+    "start-server": "node ./server/server.js",
     "start-client": "node ./client/fizzbuzz-client.js"
   },
   "author": "Ryan Vice",

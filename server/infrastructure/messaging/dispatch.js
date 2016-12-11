@@ -1,7 +1,7 @@
 'use strict'
 
-const {Message} = require('../../common/messages');
-const {handlers} = require('./message-handlers');
+const {Message} = require('../../../common/messages/index');
+const {handlers} = require('../../core/message-handlers/index');
 
 function dispatch(data, next) {
   let message = null;

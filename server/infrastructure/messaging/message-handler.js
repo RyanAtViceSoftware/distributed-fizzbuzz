@@ -1,5 +1,7 @@
-const {Message} = require('../../common/messages/index');
-const {info} = require('../../common/infrastructure/logger');
+'use strict'
+
+const {Message} = require('../../../common/messages/index');
+const {info} = require('../../../common/infrastructure/logger');
 
 class MessageHandler {
   constructor(processingLogic, handles) {

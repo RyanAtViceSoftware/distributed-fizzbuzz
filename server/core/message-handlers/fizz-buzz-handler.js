@@ -3,7 +3,7 @@
 const {info} = require('../../../common/infrastructure/logger');
 const {MessageTypes} = require('../../../common/messages/index');
 const clients = require('../../infrastructure/clients');
-const MessageHandler = require('../message-handler');
+const MessageHandler = require('../../infrastructure/messaging/message-handler');
 
 const fizzBuzzRules = [
   (val) => (val % 3 === 0) ? "Fizz" : null,
