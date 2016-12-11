@@ -2,11 +2,12 @@
 
 const {Message} = require('../../../common/messages/index');
 const {handlers} = require('../../core/message-handlers/index');
+const buildMessage = require('./build-message');
 
 function dispatch(data, next) {
   let message = null;
 
-  getMessage(data, (err, result) => {
+  buildMessage(data, (err, result) => {
     if (err) {
       next(new Error('Unable to get message from data. Error >' + err));
     }
@@ -30,16 +31,6 @@ function dispatch(data, next) {
         next('Error processing message. (message, err) > ', message, err);
       }
     });
-  }
-}
-
-// TODO: There is a better place for this...
-function getMessage(data, next) {
-  const dataAsString = data.toString();
-  try {
-    next(null, new Message(JSON.parse(dataAsString)));
-  } catch (err) {
-    next(new Error('Invalid message format:' + err + '. Data >' + data));
   }
 }
 
