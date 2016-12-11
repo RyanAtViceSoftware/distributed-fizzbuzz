@@ -16,11 +16,11 @@ class MessageServer {
   initializeSocket () {
     this.notifyThatNewClientJoined();
 
-    this._socket.on('data', this.dispatchMessage);
+    this._socket.on('data', this.dispatchMessage.bind(this));
 
-    this._socket.on('end', this.removeClient);
+    this._socket.on('end', this.removeClient.bind(this));
 
-    this._socket.on('error', this.handleError)
+    this._socket.on('error', this.handleError.bind(this))
   }
 
   notifyThatNewClientJoined() {
@@ -34,11 +34,15 @@ class MessageServer {
   }
 
   dispatchMessage(data) {
-    info('Processing ' + data);
-    dispatch(data, this.handleDispatchMessageResponse);
+    try {
+      info('Processing ' + data);
+      dispatch(data, this.handleDispatchMessageResponse.bind(null, data));
+    } catch (err) {
+      this.handleDispatchMessageResponse(data, err);
+    }
   }
 
-  handleDispatchMessageResponse(err) {
+  handleDispatchMessageResponse(data, err) {
     if (err) {
       this._socket.write('Invalid type received' + data);
 
