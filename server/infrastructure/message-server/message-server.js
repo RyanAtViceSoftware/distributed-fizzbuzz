@@ -24,12 +24,13 @@ class MessageServer {
   }
 
   notifyThatNewClientJoined() {
-    // Identify this client
-    this._socket.name = this._socket.remoteAddress + ":" + this._socket.remotePort;
+    this._socket.name
+      = this._socket.remoteAddress + ":" + this._socket.remotePort;
 
-    // Send a nice welcome message and announce
     this._socket.write("Welcome " + this._socket.name + "\n");
-    this._clients.broadcast(this._socket.name + " joined the chat\n", this._socket);
+
+    this._clients.broadcast(
+      this._socket.name + " joined the chat\n", this._socket);
   }
 
   dispatchMessage(data) {
@@ -40,6 +41,7 @@ class MessageServer {
   handleDispatchMessageResponse(err) {
     if (err) {
       this._socket.write('Invalid type received' + data);
+
       this._socket.emit(
         'error',
         new Error('Error processing data. Error > ' + err + ' stack > ' + err.stack)
@@ -53,6 +55,7 @@ class MessageServer {
 
   handleError(err) {
     const errorMessage = 'An error occurred. err > ' + err;
+
     error(errorMessage);
   }
 }
